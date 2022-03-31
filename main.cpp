@@ -1,20 +1,26 @@
 #include<iostream>
+#include<vector>
 using namespace std;
+
 struct node{
     int x;
     int y;
     int ID;
-    int neighbours[];
+    vector<int> neighbours;
 };
-
 int main(){
-    int m,offset;
+    int offset,m;
     
+    cout<<"Enter the matrix format:";
     cin>>m;
-    if(m%2 == 0) m = m+1;
+    if(m%2 == 0){
+        m = m+1;
+    }
     cout<<"Enter the value for offset:";
     cin>>offset;
     int max_val = offset * (m/2);
+    cout<<(m/2)<<endl;
+    cout<<max_val<<endl<<endl;
     int cnt = 1;
     struct node *array[m][m];
     for(int i = 0;i<m;i++){
@@ -82,10 +88,87 @@ int main(){
         }
 
     }
+    max_val = offset * (m/2);
     for(int i = 0;i<m;i++){
         for(int j = 0;j<m;j++){
-            printf("%d ",array[i][j]->ID);
+            if((array[i][j]->y == max_val) && (array[i][j]->x == -1 * max_val)){
+                
+                array[i][j]->neighbours.push_back(array[i][j+1]->ID);
+                array[i][j]->neighbours.push_back(array[i+1][j]->ID);
+                array[i][j]->neighbours.push_back(array[i+1][j+1]->ID);
+            }
+            else if((array[i][j]->y == max_val) && (array[i][j]->x == max_val)){
+                array[i][j]->neighbours.push_back(array[i][j-1]->ID);
+                array[i][j]->neighbours.push_back(array[i+1][j]->ID);
+                array[i][j]->neighbours.push_back(array[i+1][j-1]->ID);
+            }else if((array[i][j]->y == max_val) && (array[i][j]->x != max_val)){
+                array[i][j]->neighbours.push_back(array[i+1][j]->ID);
+                array[i][j]->neighbours.push_back(array[i][j+1]->ID);
+                array[i][j]->neighbours.push_back(array[i][j-1]->ID);
+                array[i][j]->neighbours.push_back(array[i+1][j-1]->ID);
+                array[i][j]->neighbours.push_back(array[i+1][j+1]->ID);
+            }
+            else if((array[i][j]->y == -1 * max_val) && (array[i][j]->x == -1 * max_val)){
+                array[i][j]->neighbours.push_back(array[i][j+1]->ID);
+                array[i][j]->neighbours.push_back(array[i-1][j]->ID);
+                array[i][j]->neighbours.push_back(array[i-1][j+1]->ID);
+            }
+            else if((array[i][j]->y == -1 * max_val) && (array[i][j]->x == max_val)){
+                array[i][j]->neighbours.push_back(array[i][j-1]->ID);
+                array[i][j]->neighbours.push_back(array[i-1][j]->ID);
+                array[i][j]->neighbours.push_back(array[i-1][j-1]->ID);
+            }
+            else if((array[i][j]->y == -1 * max_val) && (array[i][j]->x != max_val)){
+                array[i][j]->neighbours.push_back(array[i-1][j]->ID);
+                array[i][j]->neighbours.push_back(array[i][j+1]->ID);
+                array[i][j]->neighbours.push_back(array[i][j-1]->ID);
+                array[i][j]->neighbours.push_back(array[i-1][j+1]->ID);
+                array[i][j]->neighbours.push_back(array[i-1][j-1]->ID);
+            }
+            else if((array[i][j]->x == -1 * max_val) && (array[i][j]->y != max_val)){
+                array[i][j]->neighbours.push_back(array[i][j+1]->ID);
+                array[i][j]->neighbours.push_back(array[i-1][j]->ID);
+                array[i][j]->neighbours.push_back(array[i+1][j]->ID);
+                array[i][j]->neighbours.push_back(array[i-1][j+1]->ID);
+                array[i][j]->neighbours.push_back(array[i+1][j+1]->ID);
+            }
+            else if((array[i][j]->x == max_val) && (array[i][j]->y != max_val)){
+                array[i][j]->neighbours.push_back(array[i][j-1]->ID);
+                array[i][j]->neighbours.push_back(array[i-1][j]->ID);
+                array[i][j]->neighbours.push_back(array[i+1][j]->ID);
+                array[i][j]->neighbours.push_back(array[i-1][j-1]->ID);
+                array[i][j]->neighbours.push_back(array[i+1][j-1]->ID);
+            }
+            else{
+                array[i][j]->neighbours.push_back(array[i][j-1]->ID);
+                array[i][j]->neighbours.push_back(array[i][j+1]->ID);
+                array[i][j]->neighbours.push_back(array[i-1][j]->ID);
+                array[i][j]->neighbours.push_back(array[i-1][j-1]->ID);
+                array[i][j]->neighbours.push_back(array[i-1][j+1]->ID);
+                array[i][j]->neighbours.push_back(array[i+1][j]->ID);
+                array[i][j]->neighbours.push_back(array[i+1][j-1]->ID);
+                array[i][j]->neighbours.push_back(array[i+1][j+1]->ID);
+            }
+        }
+    }
+    
+    
+        
+    for(int i = 0;i<m;i++){
+        for(int j = 0;j<m;j++){
+            printf("%d : {",array[i][j]->ID);
+            for(int k = 0;k< array[i][j]->neighbours.size();k++){
+                if(k == array[i][j]->neighbours.size()-1){
+                    cout<<array[i][j]->neighbours[k]<<"";
+                    
+                }
+                else{
+                    cout<<array[i][j]->neighbours[k]<<",";
+                }
+            }cout<<"} ";
         }cout<<endl;
+        
     }
     return 0;
+
 }

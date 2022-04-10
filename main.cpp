@@ -6,6 +6,7 @@ struct node{
     int x;
     int y;
     int ID;
+    string package = "\0";
     vector<int> neighbours;
 };
 int main(){
@@ -19,8 +20,8 @@ int main(){
     cout<<"Enter the value for offset:";
     cin>>offset;
     int max_val = offset * (m/2);
-    cout<<(m/2)<<endl;
-    cout<<max_val<<endl<<endl;
+    //cout<<(m/2)<<endl;
+    //cout<<max_val<<endl<<endl;
     int cnt = 1;
     struct node *array[m][m];
     for(int i = 0;i<m;i++){
@@ -176,10 +177,16 @@ int main(){
    cin>>id;
    for(int i = 0;i<m;i++){
        for(int j = 0;j<m;j++){
-                    struct node *source;
+                    
+           if(array[i][j]->ID == id){
+               string data;
+               cout<<"Enter the data, that the package should sent to the base station:";
+               cin>>data;
+               array[i][j]->package = data;
+               cout<<"The data present in the source node is:"<<array[i][j]->package<<endl;
+               struct node *source;
                    source = array[i][j];
                    int ind_i = i,ind_j = j;
-           if(array[i][j]->ID == id){
                cout<<"The Package is at the source id, ID = "<<array[i][j]->ID<<" "<<endl;
                if(array[i][j]->x == 0 && array[i][j]->y == 0){
                    cout<<"The Package already sent to the base station! ID = "<< -1 <<endl;
@@ -189,6 +196,8 @@ int main(){
                        int temp = source->ID;
                        if(source->y != 0){
                            source = array[ind_i+1][ind_j];
+                           source->package = array[ind_i][ind_j]->package;
+                           array[ind_i][ind_j]->package = "\0";
                            ind_i = ind_i + 1;
                            cout<<"The package send this "<<temp<<" to "<<source->ID<<endl;
                        }
@@ -203,20 +212,25 @@ int main(){
                        }
                        int temp = source->ID;
                        source = array[ind_i+1][ind_j+1];
+                       source->package = array[ind_i][ind_j]->package;
+                        array[ind_i][ind_j]->package = "\0";
                        ind_i = ind_i+1;ind_j = ind_j+1;
                        cout<<"The package send from "<<temp<<" to "<<source->ID<<endl;
                    }
                    
-                   cout<<"The co-ordinate is :("<<source->x<<","<<source->y<<")"<<endl;
                    while(source->ID != -1){
                        int temp = source->ID;
                        if(source->y != 0){
                            source = array[ind_i+1][ind_j];
+                           source->package = array[ind_i][ind_j]->package;
+                           array[ind_i][ind_j]->package = "\0";
                            ind_i = ind_i + 1;
                            cout<<"The package send this "<<temp<<" to "<<source->ID<<endl;
                        }
                        else if(source->x != 0){
                            source = array[ind_i][ind_j+1];
+                           source->package = array[ind_i][ind_j]->package;
+                           array[ind_i][ind_j]->package = "\0";
                            ind_j = ind_j + 1;
                            cout<<"The package send this "<<temp<<" to "<<source->ID<<endl;
                        }
@@ -224,7 +238,6 @@ int main(){
                    
                }
                else if(array[i][j]->x > 0 && array[i][j]->y > 0){
-                   cout<<"Second phase"<<endl;
                    
                    while(source->x != 0 || source->y != 0){
                        if(source->x == 0 || source->y == 0){
@@ -232,20 +245,25 @@ int main(){
                        }
                        int temp = source->ID;
                        source = array[ind_i+1][ind_j-1];
+                       source->package = array[ind_i][ind_j]->package;
+                           array[ind_i][ind_j]->package = "\0";
                        ind_i = ind_i+1;ind_j = ind_j-1;
                        cout<<"The package send from "<<temp<<" to "<<source->ID<<endl;
                    }
                    
-                   cout<<"The co-ordinate is :("<<source->x<<","<<source->y<<")"<<endl;
                    while(source->ID != -1){
                        int temp = source->ID;
                        if(source->y != 0){
                            source = array[ind_i+1][ind_j];
+                           source->package = array[ind_i][ind_j]->package;
+                           array[ind_i][ind_j]->package = "\0";
                            ind_i = ind_i + 1;
                            cout<<"The package send this "<<temp<<" to "<<source->ID<<endl;
                        }
                        else if(source->x != 0){
                            source = array[ind_i][ind_j-1];
+                           source->package = array[ind_i][ind_j]->package;
+                           array[ind_i][ind_j]->package = "\0";
                            ind_j = ind_j - 1;
                            cout<<"The package send this "<<temp<<" to "<<source->ID<<endl;
                        }
@@ -257,6 +275,8 @@ int main(){
                        int temp = source->ID;
                        if(source->x != 0){
                            source = array[ind_i][ind_j-1];
+                           source->package = array[ind_i][ind_j]->package;
+                           array[ind_i][ind_j]->package = "\0";
                            ind_j = ind_j-1;
                            cout<<"The package send this "<<temp<<" to "<<source->ID<<endl;
                        }
@@ -268,6 +288,8 @@ int main(){
                        int temp = source->ID;
                        if(source->x != 0){
                            source = array[ind_i+1][ind_j];
+                           source->package = array[ind_i][ind_j]->package;
+                           array[ind_i][ind_j]->package = "\0";
                            ind_i = ind_i+1;
                            cout<<"The package send this "<<temp<<" to "<<source->ID<<endl;
                        }
@@ -279,62 +301,70 @@ int main(){
                        int temp = source->ID;
                        if(source->x != 0){
                            source = array[ind_i][ind_j+1];
+                           source->package = array[ind_i][ind_j]->package;
+                           array[ind_i][ind_j]->package = "\0";
                            ind_j = ind_j+1;
                            cout<<"The package send this "<<temp<<" to "<<source->ID<<endl;
                        }
                    }
                }
                else if(array[i][j]->x < 0 and array[i][j]->y < 0){
-                   cout<<"Third phase"<<endl;
-                   
-                   while(source->x != 0 || source->y != 0){
+                  while(source->x != 0 || source->y != 0){
                        if(source->x == 0 || source->y == 0){
                            break;
                        }
                        int temp = source->ID;
                        source = array[ind_i-1][ind_j+1];
+                       source->package = array[ind_i][ind_j]->package;
+                        array[ind_i][ind_j]->package = "\0";
                        ind_i = ind_i-1;ind_j = ind_j+1;
                        cout<<"The package send from "<<temp<<" to "<<source->ID<<endl;
                    }
                    
-                   cout<<"The co-ordinate is :("<<source->x<<","<<source->y<<")"<<endl;
                    while(source->ID != -1){
                        int temp = source->ID;
                        if(source->y != 0){
                            source = array[ind_i-1][ind_j];
+                           source->package = array[ind_i][ind_j]->package;
+                           array[ind_i][ind_j]->package = "\0";
                            ind_i = ind_i - 1;
                            cout<<"The package send this "<<temp<<" to "<<source->ID<<endl;
                        }
                        else if(source->x != 0){
                            source = array[ind_i][ind_j+1];
+                           source->package = array[ind_i][ind_j]->package;
+                           array[ind_i][ind_j]->package = "\0";
                            ind_j = ind_j + 1;
                            cout<<"The package send this "<<temp<<" to "<<source->ID<<endl;
                        }
                    }
                }
                else if(array[i][j]->x > 0 && array[i][j]->y < 0){
-                   cout<<"Fourth phase"<<endl;
-                   
                    while(source->x != 0 || source->y != 0){
                        if(source->x == 0 || source->y == 0){
                            break;
                        }
                        int temp = source->ID;
                        source = array[ind_i-1][ind_j-1];
+                       source->package = array[ind_i][ind_j]->package;
+                           array[ind_i][ind_j]->package = "\0";
                        ind_i = ind_i-1;ind_j = ind_j-1;
                        cout<<"The package send from "<<temp<<" to "<<source->ID<<endl;
                    }
                    
-                   cout<<"The co-ordinate is :("<<source->x<<","<<source->y<<")"<<endl;
                    while(source->ID != -1){
                        int temp = source->ID;
                        if(source->y != 0){
                            source = array[ind_i-1][ind_j];
+                           source->package = array[ind_i][ind_j]->package;
+                           array[ind_i][ind_j]->package = "\0";
                            ind_i = ind_i - 1;
                            cout<<"The package send this "<<temp<<" to "<<source->ID<<endl;
                        }
                        else if(source->x != 0){
                            source = array[ind_i][ind_j-1];
+                           source->package = array[ind_i][ind_j]->package;
+                           array[ind_i][ind_j]->package = "\0";
                            ind_j = ind_j - 1;
                            cout<<"The package send this "<<temp<<" to "<<source->ID<<endl;
                        }
@@ -345,6 +375,8 @@ int main(){
                        int temp = source->ID;
                        if(source->y != 0){
                            source = array[ind_i-1][ind_j];
+                           source->package = array[ind_i][ind_j]->package;
+                           array[ind_i][ind_j]->package = "\0";
                            ind_i = ind_i - 1;
                            cout<<"The package send this "<<temp<<" to "<<source->ID<<endl;
                        }
@@ -354,6 +386,10 @@ int main(){
                
                if(source->ID == -1){
                    cout<<"The package sent to the base station successfully!"<<endl;
+                   cout<<"The Package received from the source node is "<<source->package<<endl;
+                   cout<<"The data present source node  is: ";
+                   if(array[i][j]->package == "\0") cout<<"NULL"<<endl;
+                   else cout<<array[i][j]->package<<endl;
                }
                break;
            }

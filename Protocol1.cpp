@@ -10,7 +10,7 @@
 #include <string>
 #define OFFSET 50
 #define v 10
-#define total_packet_sending 10000
+#define total_packet_sending 750
 #include <set>
 #include <random>
 #include <ostream>
@@ -23,6 +23,7 @@ struct package_data{
     string data = NULL;
     
 };
+
 
 class packs{
 public:
@@ -52,13 +53,31 @@ struct node{
     }
 
 };
-
+void set_packdata(struct node *Node){
+    Node->package->k = 2048;
+    Node->package->data = "\0";
+    Node->package->e_elec = 50 * pow(10,-9);
+    Node->package->e_amp = 100 * pow(10,-12);
+}
 void power_reduction(node *current,node *current2){
-    
+    if(current->package == NULL){
+        current->package = (pack *)malloc(sizeof(pack));
+        set_packdata(current);
+    }
+    if(current2->package == NULL){
+        current2->package = (pack *)malloc(sizeof(pack));
+        set_packdata(current2);
+    }
     cout << "Initially...."<<endl;
     cout << "The power of node "<<current->ID<<" is "<< current->power<<endl;
     cout << "The power of node "<<current2->ID<<" is "<< current->power<<endl;
+    cout << "Working" << endl;
+    if(current2->package == NULL) cout << "There is no package!" << endl;
+    else cout << "The package exist" << endl;
+    if(current->package == NULL) cout << "Node1 has 0 package"<<endl;
+    else cout << "Node1 package exist" << endl;
     long double consumption = (current->package->e_elec * current->package->k) + (current->package->e_amp * current->package->k * 50);
+    
     cout << "Elec is:"<< current->package->e_elec << endl;
     cout << "S1:"<<(current->package->e_elec * current->package->k)<<endl;
     cout << "S2:"<<(current->package->e_amp * current->package->k * 50)<<endl;
@@ -466,6 +485,7 @@ class board{
         cout<<"in-process"<<endl;
         cout << "The given data :" << data << endl;
         source->package = (struct package_data *)malloc(sizeof(struct package_data));
+        set_packdata(source);
         source->package->data = data;
         cout << "Test:"<<source->package->data<<endl;
         cout << "Package fixed!"<<endl;
@@ -593,6 +613,7 @@ class board{
     
     void packing(node *source,string new_data){
         source->package = (pack *)malloc(sizeof(pack));
+        set_packdata(source);
         source->package->data = new_data;
         cout << source->package->data<<endl;
         cout << "Packet packed successfully!" << endl;
@@ -617,6 +638,7 @@ class board{
                 cout << "A1"<<endl;
                 iter = array[src_i-1][src_j];
                 iter->package = (pack *)malloc(sizeof(pack));
+                set_packdata(iter);
                 iter->package->data = array[src_i][src_j]->package->data;
                 power_reduction(iter,array[src_i][src_j]);
                array[src_i][src_j]->package = NULL;
@@ -629,6 +651,7 @@ class board{
                 cout << "A2"<<endl;
                 iter = array[src_i+1][src_j];
                 iter->package = (pack *)malloc(sizeof(pack));
+                set_packdata(iter);
                 power_reduction(iter,array[src_i][src_j]);
                 iter->package->data = array[src_i][src_j]->package->data;
                 array[src_i][src_j]->package = NULL;
@@ -642,6 +665,7 @@ class board{
                 cout << "A3"<<endl;
                 iter = array[src_i][src_j+1];
                 iter->package = (pack *)malloc(sizeof(pack));
+                set_packdata(iter);
                 iter->package->data = array[src_i][src_j]->package->data;
                 power_reduction(iter,array[src_i][src_j]);
                 array[src_i][src_j]->package = NULL;
@@ -652,6 +676,7 @@ class board{
                 cout << "A4"<<endl;
                 iter = array[src_i][src_j - 1];
                 iter->package = (pack *)malloc(sizeof(pack));
+                set_packdata(iter);
                 iter->package->data = array[src_i][src_j]->package->data;
                 power_reduction(iter,array[src_i][src_j]);
                 array[src_i][src_j]->package = NULL;
@@ -665,6 +690,7 @@ class board{
                     cout << "A5"<<endl;
                     iter = array[src_i+1][src_j+1];
                     iter->package = (pack *)malloc(sizeof(pack));
+                    set_packdata(iter);
                     iter->package->data = array[src_i][src_j]->package->data;
                     power_reduction(iter,array[src_i][src_j]);
                     array[src_i][src_j]->package = NULL;
@@ -676,6 +702,7 @@ class board{
                     cout << "A6"<<endl;
                     iter = array[src_i-1][src_j-1];
                     iter->package = (pack *)malloc(sizeof(pack));
+                    set_packdata(iter);
                     iter->package->data = array[src_i][src_j]->package->data;
                     power_reduction(iter,array[src_i][src_j]);
                     array[src_i][src_j]->package = NULL;
@@ -688,6 +715,7 @@ class board{
                     cout << "A7"<<endl;
                     iter = array[src_i + 1][src_j - 1];
                     iter->package = (pack *)malloc(sizeof(pack));
+                    set_packdata(iter);
                     iter->package->data = array[src_i][src_j]->package->data;
                     power_reduction(iter,array[src_i][src_j]);
                     array[src_i][src_j]->package = NULL;
@@ -700,6 +728,7 @@ class board{
                     cout << "A8"<<endl;
                     iter = array[src_i - 1][src_j + 1];
                     iter->package = (pack *)malloc(sizeof(pack));
+                    set_packdata(iter);
                     iter->package->data = array[src_i][src_j]->package->data;
                     power_reduction(iter,array[src_i][src_j]);
                     array[src_i][src_j]->package = NULL;
@@ -715,6 +744,7 @@ class board{
             cout << "A9"<<endl;
             iter = array[src_i+1][src_j];
             iter->package = (pack *)malloc(sizeof(pack));
+            set_packdata(iter);
             iter->package->data = array[src_i][src_j]->package->data;
             power_reduction(iter,array[src_i][src_j]);
             array[src_i][src_j]->package = NULL;
@@ -726,6 +756,7 @@ class board{
             cout << "A10"<<endl;
             iter = array[src_i-1][src_j];
             iter->package = (pack *)malloc(sizeof(pack));
+            set_packdata(iter);
             iter->package->data = array[src_i][src_j]->package->data;
             power_reduction(iter,array[src_i][src_j]);
             array[src_i][src_j]->package = NULL;
@@ -736,6 +767,7 @@ class board{
             cout << "A11"<<endl;
             iter = array[src_i][src_j - 1];
             iter->package = (pack *)malloc(sizeof(pack));
+            set_packdata(iter);
             iter->package->data = array[src_i][src_j]->package->data;
             power_reduction(iter,array[src_i][src_j]);
             array[src_i][src_j]->package = NULL;
@@ -746,6 +778,7 @@ class board{
             cout << "A12"<<endl;
             iter = array[src_i][src_j + 1];
             iter->package = (pack *)malloc(sizeof(pack));
+            set_packdata(iter);
             iter->package->data = array[src_i][src_j]->package->data;
             power_reduction(iter,array[src_i][src_j]);
            array[src_i][src_j]->package = NULL;
@@ -771,6 +804,7 @@ class board{
             if(array[source_x][source_y]->closure_neighbour[i].ID == -1){
                 cout << "working" << endl;
                 array[5][5]->package = (pack *)malloc(sizeof(pack));
+                set_packdata(array[5][5]);
                 cout << "alloted"<<endl;
                 array[5][5]->package->data = source.package->data;
                 power_reduction(array[source_x][source_y],array[5][5]);
@@ -792,9 +826,13 @@ class board{
         array[source_x][source_y]->closure_neighbour[new_ind].package = (pack *)malloc(sizeof(pack));
         cout << "Memeory alloted"<<endl;
         cout << "The package data:"<<source.package->data<<endl;
+        struct node *iter;
+        iter = &array[source_x][source_y]->closure_neighbour[new_ind];
+        set_packdata(iter);
         array[source_x][source_y]->closure_neighbour[new_ind].package->data = source.package->data;
-        power_reduction(array[source_x][source_y],array[5][5]);
         cout << "Package shifted" << endl;
+        power_reduction(iter,array[source_x][source_y]);
+        
         array[source_x][source_y]->package = NULL;
         forward_random_walk(array[source_x][source_y]->closure_neighbour[new_ind]);
     }
@@ -810,13 +848,20 @@ class board{
             cout << "The SOURCE impersonating as BASE STATION"<<endl;
             return;
         }
-        
+        int src_i,src_j;
         int found = 0;
         for(int i = 0;i<11;i++){
             for(int j = 0;j<11;j++){
+                
                 if(array[i][j]->ID == id){
-
+                    src_i = i;
+                    src_j = j;
                     found = 1;
+                    //total packets sending...
+                    for(int i = 0;i<total_packet_sending;i++){
+                        cout << "Initial power of the source......"<<endl;
+                        cout << "The power of the source node is:"<<array[src_i][src_j]->power<<endl;
+                        long double initial_power = array[src_i][src_j]->power;
                     this->get_3N(id);
                     this->get_square(source_x,source_y);
                     srand(time(0));
@@ -827,9 +872,6 @@ class board{
         cout << iter->ID << endl;
         string new_data = "Secret Mission 001";
         this->packing(array[source_x][source_y],new_data);
-        
-        
-        
         int des_x = 0,des_y = 0;
         int found = 0;
         for(int i = 0;i<11;i++){
@@ -872,12 +914,19 @@ class board{
         cout << "The source id :"<<array[source_x][source_y]->ID<<endl;
         cout<<"Inter id:"<<array[inter_des_x][inter_des_y]->ID<<endl;
         //this->FRW_mission(array[inter_des_x][inter_des_y]); 
+
+        cout << "Forward Random walk starting......."<< endl<<endl<<endl<<endl;
         this->forward_random_walk(*array[inter_des_x][inter_des_y]);
         cout << "The Source id atlast is:"<<array[source_x][source_y]->ID<<endl;
         cout << "The source id pack is:"<<array[source_x][source_y]->package->data<<endl;
         array[source_x][source_y]->power = 0.5;
         cout << "The power of the source is:"<<array[source_x][source_y]->power<<endl;
-        
+        if(array[src_i][src_j]->package == NULL) cout << "Yes, source doesn't have a package." << endl;
+    cout << "Power reduction status:"<< initial_power << "-->" << array[src_i][src_j]->power<<endl;
+    cout << "Power reduced:";
+    if(initial_power > array[src_i][src_j]->power) cout << "True" << endl;
+    else cout << "False" << endl;
+    cout << "The power of the source node is:"<<array[src_i][src_j]->power<<endl;
     }
 
                 }
@@ -885,7 +934,12 @@ class board{
             if(found == 0){
                 cout << "ID not found"<<endl;
             }
+
+    
+
         }
+        }
+    
         
     
 };
@@ -898,5 +952,6 @@ int main(){
     circuit.print_node_with_neighbours();
     
     circuit.mission1();
+    cout<<circuit.Packets_received_counts<<endl;
     return 0;
 }
